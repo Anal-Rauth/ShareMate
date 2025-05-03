@@ -39,8 +39,11 @@ generateBillBtn.addEventListener('click', () => {
         resetBtn.disabled = false
         return;
     }  
-    if((noTipCheckbox.checked === false) && isNaN(tipPercentage.value)){
-        alert("Select 'Split without Tip' checkbox for no tips. For Tip, 'Select Tip button' or write input in 'Custom Tip in %'")
+    if (tipPercentage <= 0 && !noTipCheckbox.checked) {
+        alert("Please select a tip or choose 'Split without Tip' checkbox");
+        billAmountInput.value = ''
+        customTipInput.value = ''
+        numberOfPeopleInput.value = ''
         tipAmountOutput.innerText = ''
         totalBillOutput.innerText = ''
         eachPersonBillOutput.innerText = ''
