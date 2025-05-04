@@ -34,13 +34,16 @@ generateBillBtn.addEventListener('click', () => {
     const billAmount = parseFloat(billAmountInput.value)
     const numberOfPeople = parseInt(numberOfPeopleInput.value)
     // const customTip = parseFloat(customTipInput.value)
-    if (isNaN(billAmount) || billAmount <= 0 || isNaN(numberOfPeople) ||isNaN(tipPercentage) || numberOfPeople <= 0) {
+    if (isNaN(billAmount) || billAmount <= 0 || tipPercentage < 0) {
         alert("Error! Please enter valid numbers!");
         resetBtn.disabled = false
         return;
-    }  
-    if (tipPercentage <= 0 && !noTipCheckbox.checked) {
-        alert("Please select a tip or choose 'Split without Tip' checkbox");
+    } else if (numberOfPeople <= 0 || isNaN(numberOfPeople)) {
+        alert("Error! Please enter number of people!");
+    }
+
+    if ((isNaN(tipPercentage) || tipPercentage <= 0) && !noTipCheckbox.checked) {
+        alert("Please select a tip or write Custom tip in (%) or choose 'Split without Tip' checkbox");
         billAmountInput.value = ''
         customTipInput.value = ''
         numberOfPeopleInput.value = ''
@@ -48,6 +51,10 @@ generateBillBtn.addEventListener('click', () => {
         totalBillOutput.innerText = ''
         eachPersonBillOutput.innerText = ''
         resetBtn.disabled = false
+        return;
+    }
+    if (isNaN(numberOfPeopleInput.value)) {
+        generateBillBtn.disabled = true
         return;
     }
 
@@ -102,9 +109,15 @@ tipsContainer.addEventListener('click', (e) => {
 })
 
 customTipInput.addEventListener('input', () => {
-    tipPercentage = parseFloat(customTipInput.value);
+    const customValue = parseFloat(customTipInput.value);
+    if (!isNaN(customValue) && customValue >= 0) {
+        tipPercentage = customValue;
+    } else {
+        tipPercentage = 0;
+    }
     [...tipsContainer.children].forEach((tip) => tip.classList.remove('selected'))
-})
+});
+
 
 resetBtn.addEventListener('click', () => {
     tipPercentage = 0
@@ -119,7 +132,7 @@ resetBtn.addEventListener('click', () => {
     generateBillBtn.disabled = true
     tipsContainer.classList.add('disabled');
 
-        [...tipsContainer.children].forEach((tip) => tip.classList.remove('selected'))
+    [...tipsContainer.children].forEach((tip) => tip.classList.remove('selected'))
 
     resetBtn.disabled = true
     noTipCheckbox.checked = false;
@@ -137,6 +150,7 @@ billAmountInput.addEventListener('input', () => {
     } else {
         customTipInput.disabled = true
         noTipCheckbox.checked = false;
+        customTipInput.value = ''
         numberOfPeopleInput.value = ''
         numberOfPeopleInput.disabled = true
         generateBillBtn.disabled = true
